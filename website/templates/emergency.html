@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>🚨 India Cyber Emergency Response</h1>
+    <p>24/7 Cybercrime Response Contacts</p>
+</header>
+
+<div class="tool-card" style="max-width: 600px; margin: 0 auto;">
+    <h2>CERT-In & Police Contacts</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+        {% for service, contact in contacts.items() %}
+        <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+            <strong>{{ service.replace('_', ' ').title() }}</strong><br>
+            <code style="color: #00ff88;">{{ contact }}</code>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="/" class="btn">← Back to Tools</a>
+    </div>
+</div>
+{% endblock %}
