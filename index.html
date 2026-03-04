@@ -1,0 +1,653 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>🛡️ CyberShield</h1>
+    <p>Cybersecurity Toolkit</p>
+</header>
+
+<nav class="nav-tabs">
+    <button class="tab-btn active" onclick="showTool('phishing')">🔍 Phishing</button>
+    <button class="tab-btn" onclick="showTool('password')">🔐 Password</button>
+    <button class="tab-btn" onclick="showTool('shortlink')">🔗 Short Link</button>
+    <button class="tab-btn" onclick="showTool('message')">💬 Message</button>
+    <button class="tab-btn" onclick="showTool('upi')">🏦 UPI</button>
+    <!-- 🔥 NEW TOOLS -->
+    <button class="tab-btn" onclick="showTool('hash')">🔐 Hashing</button>
+    <button class="tab-btn" onclick="showTool('encrypt')">🔒 Encrypt</button>
+    <button class="tab-btn" onclick="showTool('browser')">🌐 Browser Test</button>
+    <button class="tab-btn" onclick="showTool('clickjacking')">🎯 Clickjack</button>
+    <button class="tab-btn" onclick="showTool('dns')">🌍 DNS Check</button>
+    <button class="tab-btn" onclick="showTool('footprint')">👣 Footprint</button>
+    <button class="tab-btn" onclick="showTool('emergency')">🚨 Emergency</button>
+</nav>
+<main id="tools-container">
+    <!-- Phishing Tool -->
+    <section id="phishing" class="tool-section active">
+        <div class="tool-card">
+            <h2>🔍 Phishing URL Detector</h2>
+            <div class="input-group">
+                <label>Enter URL:</label>
+                <input type="url" id="phishing-url" placeholder="https://suspicious-site.com">
+            </div>
+            <button class="btn" onclick="checkPhishing()">Analyze URL</button>
+            <div id="phishing-result"></div>
+        </div>
+    </section>
+
+    <!-- Password Tools -->
+    <section id="password" class="tool-section">
+        <div class="tool-card">
+            <h3>🔐 Password Generator</h3>
+            <div class="input-group">
+                <label>Length:</label>
+                <input type="number" id="pass-length" value="16" min="8" max="64">
+            </div>
+            <button class="btn" onclick="generatePassword()">Generate Password</button>
+            <div id="password-gen-result"></div>
+        </div>
+        <div class="tool-card">
+            <h3>🧪 Password Strength</h3>
+            <div class="input-group">
+                <label>Test Password:</label>
+                <input type="message-text" id="pass-check" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="checkPassword()">Check Strength</button>
+            <div id="password-strength-result"></div>
+        </div>
+    </section>
+
+    <!-- Short Link -->
+    <section id="shortlink" class="tool-section">
+        <div class="tool-card">
+            <h2>🔗 Short Link Checker</h2>
+            <div class="input-group">
+                <label>Short URL:</label>
+                <input type="url" id="shortlink-url" placeholder="bit.ly/abc123">
+            </div>
+            <button class="btn" onclick="checkShortLink()">Check Link</button>
+            <div id="shortlink-result"></div>
+        </div>
+    </section>
+
+    <!-- Message Analyzer -->
+    <section id="message" class="tool-section">
+        <div class="tool-card">
+            <h2>💬 Message Analyzer</h2>
+            <div class="input-group">
+                <label>Suspicious Message:</label>
+                <textarea id="message-text" rows="4" placeholder="Paste message here..."></textarea>
+            </div>
+            <button class="btn" onclick="analyzeMessage()">Analyze</button>
+            <div id="message-result"></div>
+        </div>
+    </section>
+
+    <!-- UPI Checker -->
+    <section id="upi" class="tool-section">
+        <div class="tool-card">
+            <h2>🏦 UPI ID Validator</h2>
+            <div class="input-group">
+                <label>UPI ID:</label>
+                <input type="text" id="upi-id" placeholder="example@paytm">
+            </div>
+            <button class="btn" onclick="checkUPI()">Validate</button>
+            <div id="upi-result"></div>
+        </div>
+    </section>
+    <!-- Hash Generator -->
+    <section id="hash" class="tool-section">
+        <div class="tool-card">
+            <h2>🔐 Hash Generator (SHA256/MD5)</h2>
+            <div class="input-group">
+                <label>Text to Hash:</label>
+                <textarea id="hash-text" rows="3" placeholder="Enter text, password, or file content..."></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                <select id="hash-algo">
+                    <option value="sha256">SHA-256</option>
+                    <option value="md5">MD5</option>
+                </select>
+                <input type="file" id="hash-file" style="padding: 8px;">
+            </div>
+            <button class="btn" onclick="generateHash()">Generate Hash</button>
+            <div id="hash-result"></div>
+        </div>
+    </section>
+    <!-- Hash Encryption Tool -->
+    <section id="encrypt" class="tool-section">
+        <div class="tool-card">
+            <h2>🔒 Hash Encryption (AES/SHA)</h2>
+            <div class="input-group">
+                <label>Text to Encrypt:</label>
+                <textarea id="encrypt-text" rows="3" placeholder="Enter sensitive data..."></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap;">
+                <select id="encrypt-algo">
+                    <option value="aes">AES-256</option>
+                    <option value="sha3">SHA3-256</option>
+                </select>
+                <input type="password" id="encrypt-key" placeholder="Encryption Key (optional)" style="flex: 1;">
+                <label style="display: flex; align-items: center; gap: 5px; font-size: 0.9rem;">
+                    <input type="checkbox" id="encrypt-salt"> Add Salt
+                </label>
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="encryptData()">🔐 Encrypt</button>
+                <button class="btn secondary" onclick="decryptData()">🔓 Decrypt</button>
+            </div>
+            <div id="encrypt-result"></div>
+        </div>
+    </section>
+
+
+    <!-- Browser Security Test -->
+    <section id="browser" class="tool-section">
+        <div class="tool-card">
+            <h2>🌐 Browser Security Test</h2>
+            <button class="btn" onclick="testBrowser()">Run Security Audit</button>
+            <div id="browser-result"></div>
+        </div>
+    </section>
+
+    <!-- Clickjacking Test -->
+    <section id="clickjacking" class="tool-section">
+        <div class="tool-card">
+            <h2>🎯 Clickjacking Protection</h2>
+            <div class="input-group">
+                <label>Website URL:</label>
+                <input type="url" id="clickjack-url" placeholder="https://example.com">
+            </div>
+            <button class="btn" onclick="testClickjacking()">Test Protection</button>
+            <div id="clickjack-result"></div>
+        </div>
+    </section>
+
+    <!-- DNS Hijack Check -->
+    <section id="dns" class="tool-section">
+        <div class="tool-card">
+            <h2>🌍 DNS Hijacking Detector</h2>
+            <div class="input-group">
+                <label>Domain/IP:</label>
+                <input type="text" id="dns-domain" placeholder="example.com or 8.8.8.8" style="width:100%;">
+            </div>
+            <button class="btn primary" onclick="testDNS()">🔍 SCAN DNS</button>
+            <div id="dns-result"></div>
+        </div>
+    </section>
+
+
+    <!-- Digital Footprint -->
+    <section id="footprint" class="tool-section">
+        <div class="tool-card">
+            <h2>👣 Digital Footprint Scanner</h2>
+            <div class="input-group">
+                <label>Email/Phone:</label>
+                <input type="text" id="footprint-email" placeholder="user@gmail.com">
+            </div>
+            <button class="btn" onclick="scanFootprint()">Scan Exposure</div>
+            <div id="footprint-result"></div>
+        </div>
+    </section>
+
+    <!-- Emergency Response India -->
+    <section id="emergency" class="tool-section">
+        <div class="tool-card">
+            <h2>🚨 Emergency Response Team - India</h2>
+            <button class="btn" onclick="showEmergency()">Get CERT-In Contacts</button>
+            <div id="emergency-result"></div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function showTool(toolId) {
+    document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(toolId).classList.add('active');
+    event.target.classList.add('active');
+}
+
+async function checkPhishing() {
+    const url = document.getElementById('phishing-url').value;
+    const result = document.getElementById('phishing-result');
+    if (!url) return result.innerHTML = '<div class="result danger">Enter a URL</div>';
+    
+    const response = await fetch('/api/phishing', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url})
+    });
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result ${data.status}">
+            <strong>${data.status === 'danger' ? '🚨' : data.status === 'warning' ? '⚠️' : '✅'} ${data.message}</strong>
+        </div>
+    `;
+}
+
+async function generatePassword() {
+    const length = document.getElementById('pass-length').value;
+    const resultDiv = document.getElementById('password-gen-result');
+    
+    try {
+        const response = await fetch('/api/password/generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({length: parseInt(length)})
+        });
+        
+        const data = await response.json();
+        console.log('Password generated:', data.password); // Debug log
+        
+        if (data.password) {
+            resultDiv.innerHTML = `
+                <div class="result safe">
+                    <strong>✅ Generated Password (${length} chars):</strong><br><br>
+                    <div style="background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; 
+                                font-family: monospace; font-size: 1.1rem; word-break: break-all; 
+                                border-left: 4px solid #00ff88;">
+                        ${data.password}
+                    </div><br>
+                    <button class="btn" onclick="copyPassword('${data.password.replace(/'/g, "\\'")}')">📋 Copy Password</button>
+                    <button class="btn" onclick="generatePassword()">🔄 Regenerate</button>
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = '<div class="result danger">❌ Failed to generate password</div>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = '<div class="result danger">❌ Network error - try again</div>';
+    }
+}
+
+// Add this new copy function
+function copyPassword(password) {
+    navigator.clipboard.writeText(password).then(() => {
+        // Show temporary copy success
+        const btn = event.target;
+        const original = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.style.background = '#00ff88';
+        setTimeout(() => {
+            btn.innerHTML = original;
+            btn.style.background = '';
+        }, 1500);
+    });
+}
+
+
+async function checkPassword() {
+    const password = document.getElementById('pass-check').value;
+    const result = document.getElementById('password-strength-result');
+    if (!password) return result.innerHTML = '<div class="result danger">Enter password</div>';
+    
+    const response = await fetch('/api/password/check', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({password})
+    });
+    const data = await response.json();
+    
+    const status = data.score >= 80 ? 'safe' : data.score >= 60 ? 'warning' : 'danger';
+    result.innerHTML = `
+        <div class="result ${status}">
+            <strong>${data.strength} (${data.score}/100)</strong>
+        </div>
+    `;
+}
+
+// Similar functions for other tools...
+async function checkShortLink() {
+    const url = document.getElementById('shortlink-url').value;
+    const result = document.getElementById('shortlink-result');
+    if (!url) return result.innerHTML = '<div class="result danger">Enter URL</div>';
+    
+    const response = await fetch('/api/shortlink', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url})
+    });
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result ${data.warning ? 'warning' : 'safe'}">
+            <strong>${data.is_short ? '⚠️ Shortened URL' : '✅ Direct URL'}</strong>
+        </div>
+    `;
+}
+async function encryptData() {
+    const text = document.getElementById('encrypt-text').value;
+    const algo = document.getElementById('encrypt-algo').value;
+    const key = document.getElementById('encrypt-key').value;
+    const salt = document.getElementById('encrypt-salt').checked;
+    const result = document.getElementById('encrypt-result');
+    
+    if (!text) {
+        result.innerHTML = '<div class="result danger">Enter text to encrypt</div>';
+        return;
+    }
+    
+    result.innerHTML = '<div class="result warning">🔄 Encrypting...</div>';
+    
+    try {
+        const response = await fetch('/api/encrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({data: text, algo, key, salt})
+        });
+        const data = await response.json();
+        
+        result.innerHTML = `
+            <div class="result safe">
+                <strong>${data.algo.toUpperCase()} Encrypted:</strong><br><br>
+                <div style="background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 8px; 
+                            font-family: monospace; font-size: 0.95rem; word-break: break-all; 
+                            border-left: 4px solid #00ff88; margin-bottom: 1rem;">
+                    ${data.encrypted}
+                </div>
+                ${data.key ? `<small style="color: #888;">Key used: ${data.key.slice(0,10)}...</small>` : ''}
+                <div style="margin-top: 1rem;">
+                    <button class="btn" onclick="navigator.clipboard.writeText('${data.encrypted}')">📋 Copy Encrypted</button>
+                    <button class="btn secondary" onclick="document.getElementById('encrypt-text').value='${data.encrypted}'; document.getElementById('encrypt-algo').value='${data.algo}';">🔄 Prepare Decrypt</button>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        result.innerHTML = '<div class="result danger">❌ Encryption failed</div>';
+    }
+}
+
+async function decryptData() {
+    const text = document.getElementById('encrypt-text').value;
+    const algo = document.getElementById('encrypt-algo').value;
+    const key = document.getElementById('encrypt-key').value;
+    const result = document.getElementById('encrypt-result');
+    
+    if (!text || !key) {
+        result.innerHTML = '<div class="result danger">Enter encrypted text and key</div>';
+        return;
+    }
+    
+    result.innerHTML = '<div class="result warning">🔓 Decrypting...</div>';
+    
+    try {
+        const response = await fetch('/api/decrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({data: text, algo, key})
+        });
+        const data = await response.json();
+        
+        if (data.decrypted) {
+            result.innerHTML = `
+                <div class="result safe">
+                    <strong>✅ Decrypted Successfully:</strong><br><br>
+                    <div style="background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; 
+                                font-family: monospace; font-size: 1.1rem; word-break: break-all; 
+                                border-left: 4px solid #00ff88;">
+                        ${data.decrypted}
+                    </div>
+                    <button class="btn" onclick="navigator.clipboard.writeText('${data.decrypted}')">📋 Copy Decrypted</button>
+                </div>
+            `;
+        } else {
+            result.innerHTML = '<div class="result danger">❌ Decryption failed - wrong key?</div>';
+        }
+    } catch (error) {
+        result.innerHTML = '<div class="result danger">❌ Decryption error</div>';
+    }
+}
+
+
+async function analyzeMessage() {
+    const message = document.getElementById('message-text').value;
+    const result = document.getElementById('message-result');
+    if (!message) return result.innerHTML = '<div class="result danger">Enter message</div>';
+    
+    const response = await fetch('/api/message', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message})
+    });
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result ${data.status}">
+            <strong>${data.flags} Red Flags Detected</strong>
+        </div>
+    `;
+}
+
+async function checkUPI() {
+    const upi = document.getElementById('upi-id').value;
+    const result = document.getElementById('upi-result');
+    if (!upi) return result.innerHTML = '<div class="result danger">Enter UPI ID</div>';
+    
+    const response = await fetch('/api/upi', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({upi_id: upi})
+    });
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result ${data.valid ? 'safe' : 'warning'}">
+            <strong>${data.valid ? '✅ Valid UPI' : '❌ Invalid Format'}</strong>
+        </div>
+    `;
+}
+// 🔥 NEW TOOL FUNCTIONS
+async function generateHash() {
+    const text = document.getElementById('hash-text').value;
+    const algo = document.getElementById('hash-algo').value;
+    const result = document.getElementById('hash-result');
+    
+    if (!text) {
+        result.innerHTML = '<div class="result danger">Enter text to hash</div>';
+        return;
+    }
+    
+    const response = await fetch('/api/hash', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({data: text, algo})
+    });
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result safe">
+            <strong>${data.algorithm.toUpperCase()}:</strong><br>
+            <code style="font-size: 0.9rem; word-break: break-all; background: rgba(0,0,0,0.3); padding: 0.8rem; display: block; border-radius: 5px;">
+                ${data.hash}
+            </code>
+            <button class="btn" onclick="navigator.clipboard.writeText('${data.hash}')">Copy Hash</button>
+        </div>
+    `;
+}
+
+async function testBrowser() {
+    const result = document.getElementById('browser-result');
+    result.innerHTML = '<div class="result warning">🔄 Testing browser security...</div>';
+    
+    const response = await fetch('/api/browser-test');
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result ${data.score >= 4 ? 'safe' : 'warning'}">
+            <strong>Security Score: ${data.score}/5</strong>
+            <ul>
+                <li>HTTPS: ${data.tests.https ? '✅' : '❌'}</li>
+                <li>Headers: ${data.tests.secure_headers ? '✅' : '❌'}</li>
+                <li>Cookies: ${data.tests.cookies_secure ? '✅' : '❌'}</li>
+                <li>Trackers: ${data.tests.third_party ? '⚠️' : '✅'}</li>
+                <li>Fingerprint: ${data.tests.fingerprint ? '🔒' : '⚠️'}</li>
+            </ul>
+        </div>
+    `;
+}
+
+async function testClickjacking() {
+    const url = document.getElementById('clickjack-url').value;
+    const result = document.getElementById('clickjack-result');
+    
+    const response = await fetch('/api/clickjacking', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url})
+    });
+    const data = await response.json();
+    
+    result.innerHTML = `
+        <div class="result safe">
+            <strong>🎯 Clickjacking Status: ${data.protected ? 'PROTECTED' : 'VULNERABLE'}</strong>
+            <ul>
+                <li>X-Frame-Options: ${data['X-Frame-Options']}</li>
+                <li>CSP: frame-ancestors 'self'</li>
+            </ul>
+        </div>
+    `;
+}
+
+async function testDNS() {
+    const domain = document.getElementById('dns-domain').value.trim();
+    const result = document.getElementById('dns-result');
+    
+    if (!domain) {
+        result.innerHTML = '<div class="result danger">Enter domain!</div>';
+        return;
+    }
+    
+    result.innerHTML = `
+        <div class="result warning">
+            🔄 Analyzing DNS security...
+            <div style="font-size:0.8rem;opacity:0.7;">TLD • Patterns • DNSSEC • CDN • Records</div>
+        </div>
+    `;
+    
+    try {
+        const response = await fetch('/api/dns', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({domain: domain})
+        });
+        
+        if (!response.ok) throw new Error('Server error');
+        
+        const data = await response.json();
+        
+        result.innerHTML = `
+            <div class="result ${data.status}">
+                <h3 style="margin:0 0 10px 0;">${data.message}</h3>
+                
+                <div style="background:rgba(0,0,0,0.2);padding:12px;border-radius:8px;margin:10px 0;">
+                    <strong>🎯 DNSSEC:</strong> ${data.dnssec}<br>
+                    <strong>🏠 Records:</strong><br>
+                    <small style="word-break:break-all;">
+                        A: ${data.records.A.join(', ')}<br>
+                        NS: ${data.records.NS.join(', ')}
+                    </small>
+                </div>
+                
+                <div style="font-size:0.9rem;">
+                    ${data.checks.map(check => `<div>• ${check}</div>`).join('')}
+                </div>
+                
+                <div style="margin-top:15px;padding:10px;background:${data.safe_to_visit ? '#00ff8820' : '#ff444420'};border-radius:8px;">
+                    <strong>${data.safe_to_visit ? '✅ SAFE TO VISIT' : '🚨 POTENTIAL HIJACK'}</strong>
+                </div>
+                
+                <div style="margin-top:10px;">
+                    ${data.recommendations.map(r => `<div style="font-size:0.85rem;">${r}</div>`).join('')}
+                </div>
+            </div>
+        `;
+        
+    } catch (error) {
+        result.innerHTML = `
+            <div class="result danger">
+                ❌ DNS scan failed<br>
+                <small>Check server console</small>
+            </div>
+        `;
+        console.error('DNS Error:', error);
+    }
+}
+
+
+async function scanFootprint() {
+    const email = document.getElementById('footprint-email').value.trim();
+    const result = document.getElementById('footprint-result');
+    
+    if (!email) {
+        result.innerHTML = '<div class="result danger">Enter email!</div>';
+        return;
+    }
+    
+    result.innerHTML = `
+        <div class="result warning">
+            <div>⚡ Scanning <strong>1000+</strong> databases...</div>
+            <div style="font-size: 0.8rem; opacity: 0.7;">BreachDB • Social • DarkWeb • ML Analysis</div>
+        </div>
+    `;
+    
+    try {
+        const response = await fetch('/api/footprint', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email})
+        });
+        const data = await response.json();
+        
+        result.innerHTML = `
+            <div class="result ${data.risk_level}">
+                <h3 style="margin: 0 0 10px 0;">${data.message}</h3>
+                <div class="score-badge" style="
+                    display: inline-block; padding: 8px 16px; 
+                    border-radius: 25px; font-weight: bold;
+                    background: ${data.risk_level === 'minimal' ? '#00ff88' : 
+                                data.risk_level === 'low' ? '#88ff00' :
+                                data.risk_level === 'medium' ? '#ffaa00' :
+                                data.risk_level === 'high' ? '#ff8800' : '#ff4444'};
+                    color: white;
+                ">
+                    ${data.security_grade} (${data.risk_percentage})
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <strong>📊 1000+ Checks Found:</strong><br>
+                    ${Object.entries(data.check_summary).map(([k,v]) => 
+                        `<div style="font-size: 0.9rem;">• ${k.replace('_', ' ').toUpperCase()}: ${v}</div>`
+                    ).join('')}
+                </div>
+                
+                ${data.top_findings.map(finding => `<div class="finding">• ${finding}</div>`).join('')}
+                
+                <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>🚨 Critical:</strong> 
+                    ${data.breach_count} breaches | 
+                    ${data.social_profiles} social | 
+                    ${data.darkweb_exposure} darkweb
+                </div>
+                
+                <div style="margin-top: 10px;">
+                    ${data.recommendations.slice(0,3).map(r => `<div style="font-size: 0.9rem;">${r}</div>`).join('')}
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        result.innerHTML = '<div class="result danger">❌ Network error</div>';
+    }
+}
+
+
+
+function showEmergency() {
+    window.open('/emergency', '_blank');
+    // All emergency contacts logged in admin panel
+}
+
+</script>
+{% endblock %}

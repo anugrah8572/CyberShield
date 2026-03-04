@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>🔐 CyberShield Admin Panel</h1>
+    <p>Complete User Activity Monitoring</p>
+</header>
+
+<div class="admin-login" style="{% if not show_login %}display: none;{% endif %}">
+    <div class="tool-card" style="max-width: 400px; margin: 0 auto;">
+        <h2>Admin Login</h2>
+        <form method="POST">
+            <div class="input-group">
+                <label>Username:</label>
+                <input type="text" name="username" required>
+            </div>
+            <div class="input-group">
+                <label>Password:</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+           <!-- Demo: <code>cyberadmin</code> / <code>Shield2026!</code>-->
+        </p>
+    </div>
+</div>
+
+{% if session.admin_logged_in or not show_login %}
+<div class="tool-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>👥 User Activity Logs ({{ logs|length }})</h2>
+        <div>
+            <a href="/admin/clear_logs" class="btn" style="background: #ff4444;">Clear All Logs</a>
+            <a href="/admin/logout" class="btn">Logout</a>
+        </div>
+    </div>
+    
+    {% if logs %}
+    <div class="user-logs">
+        {% for log in logs %}
+        <div class="log-entry">
+            <strong>{{ log.tool }}</strong> | {{ log.timestamp }}<br>
+            <small>User: {{ log.username or 'Anonymous' }} | IP: {{ log.ip }}</small><br>
+            <small>Input: {{ log.input[:100] }}{% if log.input|length > 100 %}...{% endif %}</small>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No activity logs found.</p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
