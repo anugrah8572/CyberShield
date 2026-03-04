@@ -40,11 +40,11 @@ class CybersecurityDB:
         ''')
         
         # Admin credentials (cyberadmin / Shield2026!)
-        admin_hash = hashlib.sha256("Shield2026!".encode()).hexdigest()
+        admin_hash = hashlib.sha256("anugrah8572".encode()).hexdigest()
         cursor.execute('''
             INSERT OR IGNORE INTO users (username, password_hash, is_admin)
             VALUES (?, ?, 1)
-        ''', ("cyberadmin", admin_hash))
+        ''', ("admin", admin_hash))
         
         conn.commit()
         conn.close()
